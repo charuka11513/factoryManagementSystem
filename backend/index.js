@@ -8,6 +8,7 @@ const app = express();
 require("dotenv").config(); 
 app.use(express.json()); 
 
+//declare the parth hear
 const WorkOder = require("./Routes/workoder_routes.js");
 
 
@@ -17,7 +18,12 @@ const WorkOder = require("./Routes/workoder_routes.js");
 
 app.get('/',(req,res)=>res.send("Helow server is running .."));
 app.use("/", WorkOder);
-//app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+
+
+
+
+
+
 
 
 
