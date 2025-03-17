@@ -1,25 +1,32 @@
 const express = require("express");
-const DBconnection = require("./config/db.js")
+const mongoose = require('mongoose');
+require("dotenv").config();
+
+const PORT = process.env.PORT || 3000;
 const app = express();
-const PORT =3001;
 
+require("dotenv").config(); 
+app.use(express.json()); 
 
-DBconnection();
-
-
-
-
+const WorkOder = require("./Routes/workoder_routes.js");
 
 
 
 
 
 
+app.get('/',(req,res)=>res.send("Helow server is running .."));
+app.use("/", WorkOder);
+//app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
 
 
 
-app.get('/',(req,res)=>res.send("Helow server is running ..."));
-
-app.listen(PORT, () => console.log(`server running on port ${PORT}`));
-
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log(`port number => ${PORT} 📌`);
+        app.listen(PORT, () => console.log("MongoDB Database Connected 🌿 ✅"));
+    }).catch((err) => {
+        console.log(err);
+        console.error('MongoDB Database Connection Failed:', err);
+    });
