@@ -18,14 +18,7 @@ router.post("/WorkOder_create",async(req,res)=>{
     res.send({success:true,message:"data created successfuly"});
 });
 
-/*router.post("/WorkOder_create",(req, res)=> {
-    itemmodel.create(res.body)
-    .then(()=>res.json({msg:"Tour Guide added Succesfully"}))
-    .catch((err)=> {
-        console.error("error adding tour guide details:",err);  
-        res.status(400).json({msg:"Tour Guide adding Failed",error:err.message });
-    });
-});*/
+
 
 router.put("/WorkOder_update",async(req,res)=>{
     const {id,...rest}=req.body
@@ -48,7 +41,6 @@ res.send({success:true,message:"deleted successfully",data:data})
 router.get("/WorkOder_count",async(req,res)=>{
     try{
         const users=await itemmodel.find({});
-
         return res.status(200).json({
             count:users.length,
             data:users
@@ -63,7 +55,6 @@ router.get("/WorkOder_count",async(req,res)=>{
 
 router.get("/WorkOder_order/:id", async (req, res) => {
     const id = req.params.id;
-
     try {
         const order = await itemmodel.findById(id);
 
