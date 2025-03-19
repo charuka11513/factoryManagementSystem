@@ -36,8 +36,8 @@ const WorkOrders = () => {
   useEffect(() => {
     if (Array.isArray(inventory)) {
     setFiltereDatails(
-      inventory.filter(booking =>
-        Object.values(booking).some(value =>
+      inventory.filter(W_oder =>
+        Object.values(W_oder).some(value =>
           value.toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
       )
@@ -157,6 +157,10 @@ const WorkOrders = () => {
     if (!currentWorkOrder.order_status || !currentWorkOrder.order_status.trim()) {
       newErrors.order_status = "order_status is required.";
     }
+    // Validate machine
+    if (!currentWorkOrder.machine || !currentWorkOrder.machine.trim()) {
+      newErrors.machine = "machine is required.";
+    }
 
   
     setValidationErrors(newErrors);
@@ -171,24 +175,25 @@ const WorkOrders = () => {
 
   //pdf generate
   const handleExportPDF = () => {
-    const headers = ['Name', 'Mobile Number', 'Email', 'Vehicle Number', 'Vehicle Type','Service Type','Date','Time'];
-    const data = filtereDatails.map(appointmentDetails => [
-      appointmentDetails.customer_name,
-      appointmentDetails.customer_nb,
-      appointmentDetails.email_address,
-      appointmentDetails.vehicle_nb,
-      appointmentDetails.vehicle_type,
-      appointmentDetails.service_type,
-      appointmentDetails.date,
-      appointmentDetails.time
+    // Define the headers for the PDF
+    const headers = ['Work Order ID', 'Product', 'Quantity', 'Machine', 'Deadline Date', 'Order Status'];
+    
+    // Map the work order details into an array of data
+    const data = filtereDatails.map(workOrderDetails => [
+      workOrderDetails.work_order_Id,
+      workOrderDetails.product,
+      workOrderDetails.quentity,
+      workOrderDetails.machine,
+      workOrderDetails.deadline_date,
+      workOrderDetails.order_status
     ]);
-    const title = 'appointmentDetails Details';
+    const title = 'Work Order Details';
     const generatedDate = new Date().toLocaleString();
     const numberOfItems = filtereDatails.length;
-
     PdfGenerator.generatePdf(data, title, headers, numberOfItems, generatedDate);
   };
 
+  ////////////////////////////////////////////////////email//////////////////////////////////////////////
   const [clickedAcceptButtons, setClickedAcceptButtons] = useState([]);
   const sendConfirmationEmail = async (email,name, appointmentDetails) => {
     try {
@@ -295,6 +300,13 @@ const WorkOrders = () => {
             </FormGroup>
 
             <FormGroup>
+              <Label for="machine">machine</Label>
+              <Input type="text"name="machine"id="machine"value={currentWorkOrder.machine || ''} onChange={handleInputChange}
+                invalid={!!validationErrors.machine}/>
+                {validationErrors.machine && <div className="text-danger">{validationErrors.machine}</div>}
+            </FormGroup>
+
+            <FormGroup>
               <Label for="product">Product</Label>
               <Input type="text"name="product"id="product"value={currentWorkOrder.product || ''} onChange={handleInputChange}
                 invalid={!!validationErrors.product}/>
@@ -320,48 +332,34 @@ const WorkOrders = () => {
                     <Label for="order_status">Production Status</Label>
                     <div>
                       <div className="form-check form-check-inline">
-                        <Input
-                          type="radio"
-                          name="order_status"
-                          id="inProgress"
-                          value="In Progress"
+                        <Input type="radio"name="order_status"id="inProgress"value="In Progress"
                           checked={currentWorkOrder.order_status === "In Progress"}
                           onChange={handleInputChange}
                           invalid={!!validationErrors.order_status}
-                          className="form-check-input"
-                        />
-                        <Label for="inProgress" className="form-check-label">In Progress</Label>
-                      </div>
+                          className="form-check-input"/>
+                          <Label for="inProgress" className="form-check-label">In Progress</Label>
+                    </div>   
+
                       <div className="form-check form-check-inline">
-                        <Input
-                          type="radio"
-                          name="order_status"
-                          id="processed"
-                          value="Processed"
+                        <Input type="radio"name="order_status"id="processed"value="Processed"
                           checked={currentWorkOrder.order_status === "Processed"}
                           onChange={handleInputChange}
                           invalid={!!validationErrors.order_status}
-                          className="form-check-input"
-                        />
-                        <Label for="processed" className="form-check-label">Processed</Label>
+                          className="form-check-input"/>
+                         <Label for="processed" className="form-check-label">Processed</Label>
                       </div>
+      
                       <div className="form-check form-check-inline">
-                        <Input
-                          type="radio"
-                          name="order_status"
-                          id="pending"
-                          value="Pending"
+                        <Input type="radio"name="order_status"id="pending"value="Pending"
                           checked={currentWorkOrder.order_status === "Pending"}
                           onChange={handleInputChange}
                           invalid={!!validationErrors.order_status}
-                          className="form-check-input"
-                        />
+                          className="form-check-input"/> 
                         <Label for="pending" className="form-check-label">Pending</Label>
                       </div>
                     </div>
                     {validationErrors.order_status && <div className="text-danger">{validationErrors.order_status}</div>}
-            </FormGroup>
-
+            </FormGroup>    
           </Form>
         </ModalBody>
         <ModalFooter>

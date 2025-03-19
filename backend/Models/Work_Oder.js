@@ -6,18 +6,10 @@ const workSchema = mongoose.Schema(
     product: { type: String, required: true },
     quentity: { type: String, required: true },
     machine: { type: String, required: true },
-    deadline_date: {
-      type: Date,
-      required: true,
-      set: (value) => {
-        // Ensure the deadline_date is stored with time as 00:00:00 (ignoring time zone)
-        const date = new Date(value);
-        date.setHours(0, 0, 0, 0); // Set time to 00:00:00 to store only the date
-        return date;
-      },
-    },
+    deadline_date: {type: Date, required: true},
     order_status: { type: String, required: true },
   },
+  
   {
     timestamps: true, // Enabling timestamps
   }
