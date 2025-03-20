@@ -15,7 +15,7 @@ const Header = () => {
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
-        to="/slink" 
+        to="/sidebar" 
         activeClassName="active">Longer nav link</NavLink>
       
         
