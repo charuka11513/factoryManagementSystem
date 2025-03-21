@@ -7,6 +7,7 @@ import { AuthContext } from '../TEST/context/AuthContext';
 // import FactoryLogo from './assets/factory-logo.png';
 
 import Workoder from './workOders';
+import Dashboard from './dashboard';
 
 
 
@@ -100,20 +101,17 @@ const AdminProfile = () => {
               <Tab.Pane active={activeTab === 'customerMessage'} >
               <Workoder /></Tab.Pane>
 
-              {/*<Tab.Pane active={activeTab === 'dashboard'} >
-              <Dashboard /></Tab.Pane>*/}
+              <Tab.Pane active={activeTab === 'dashboard'} >
+              <Dashboard /></Tab.Pane>
 
-              <Tab.Pane active={activeTab === 'orders'} >
+              <Tab.Pane active={activeTab === 'workOrders'} >
               <Workoder /></Tab.Pane>
 
 
 
             </Tab.Content>
-          </Col>
-
-            
-      
-     </Row>
+          </Col>  
+      </Row>
     </Container>
   );
 };

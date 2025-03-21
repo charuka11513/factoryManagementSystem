@@ -5,10 +5,11 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import CusSwal from '../TEST/Utils/CustomSwal/CusSwal';
 import { BASE_URL2 } from '../TEST/Utils/config';
-import { BASE_URL1 } from '../TEST/Utils/config';
+//import { BASE_URL1 } from '../TEST/Utils/config';
 import {message} from 'antd'
 import PdfGenerator from '../TEST/Utils/Pdfs/SupplierPDF';
 import { AuthContext } from '../TEST/context/AuthContext.jsx'; 
+
 
 const WorkOrders = () => {
 
@@ -51,7 +52,7 @@ const WorkOrders = () => {
       setFiltereDatails(response.data);
       convObjToArry(response, setInventory);
     } catch (error) {
-      toast.error('Failed to fetch inventory');
+      toast.error('Failed to fetch WorkOder');
     }
   };
 
@@ -105,7 +106,7 @@ const WorkOrders = () => {
       await axios.put(`${BASE_URL2}/WorkOder_update`, { id: currentWorkOrder._id, ...currentWorkOrder });
       fetchInventory();
       toggle();
-      message.success("updated successfully");
+      toast.success("updated successfully");
     } catch (error) {
       toast.error('Failed to update');
     }
@@ -332,12 +333,12 @@ const WorkOrders = () => {
                     <Label for="order_status">Production Status</Label>
                     <div>
                       <div className="form-check form-check-inline">
-                        <Input type="radio"name="order_status"id="inProgress"value="In Progress"
-                          checked={currentWorkOrder.order_status === "In Progress"}
+                        <Input type="radio"name="order_status"id="processing"value="processing"
+                          checked={currentWorkOrder.order_status === "processing"}
                           onChange={handleInputChange}
                           invalid={!!validationErrors.order_status}
                           className="form-check-input"/>
-                          <Label for="inProgress" className="form-check-label">In Progress</Label>
+                          <Label for="processing" className="form-check-label">processing</Label>
                     </div>   
 
                       <div className="form-check form-check-inline">
@@ -369,6 +370,8 @@ const WorkOrders = () => {
           <Button color="secondary" onClick={toggle}>Cancel</Button>
         </ModalFooter>
       </Modal>
+     
+
     </div>
   );
 
