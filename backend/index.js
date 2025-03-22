@@ -12,23 +12,14 @@ app.use(cors());
 
 //declare the parth hear
 const WorkOder = require("./Routes/workoder_routes.js");
-
-
-
-
+const machine = require("./Routes/machine_routes.js");
+const employee = require("./Routes/employee_routes.js");
 
 
 app.get('/',(req,res)=>res.send("Helow server is running .."));
 app.use("/", WorkOder);
-
-
-
-
-
-
-
-
-
+app.use("/",machine);
+app.use("/",employee);
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
