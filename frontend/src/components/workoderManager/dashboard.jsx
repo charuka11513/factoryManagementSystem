@@ -16,9 +16,9 @@ const FactoryManagementDashboard = () => {
     const [currentTime, setCurrentTime] = useState(new Date());// State for current time
 
     const [Workoder, setWorkoder] = useState([]);
-    const [processingOrders, setprocessingOrders] = useState([]);
+   // const [processingOrders, setprocessingOrders] = useState([]);
     const [recentOrders, setrecentOrders] = useState([]);
-    //const [employees, setemployees] = useState([]);
+    const [employees, setemployees] = useState([]);
     //const [materials, setmaterials] = useState([]);
   
    const convObjToArry = (response,setveriale) => {
@@ -28,7 +28,7 @@ const FactoryManagementDashboard = () => {
 
  
 
-  const [employees] = useState(15);
+  //const [employees] = useState(15);
     const [materials] = useState([
     { name: 'Material 1', value: 10 },
     { name: 'Material 2', value: 50 },
@@ -46,18 +46,22 @@ const FactoryManagementDashboard = () => {
             try {
                 const timer = setInterval(() => {setCurrentTime(new Date()); }, 1000);  
                 
-                const oderResponse = await axios.get(`${BASE_URL2}/WorkOder`);
+                const oderResponse = await axios.get(`${BASE_URL2}/WorkOder`);//pending process processing odre
                 setWorkoder(oderResponse.data);
                 convObjToArry(oderResponse, setWorkoder);
 
-                const processingOrders = await axios.get(`${BASE_URL2}/WorkOder`);
+                /*const processingOrders = await axios.get(`${BASE_URL2}/WorkOder`);
                 setprocessingOrders(processingOrders.data);
-                convObjToArry(processingOrders, setprocessingOrders);
+                convObjToArry(processingOrders, setprocessingOrders);*/
                 
-                const Orders = await axios.get(`${BASE_URL2}/WorkOder`);
+                const Orders = await axios.get(`${BASE_URL2}/WorkOder`); 
                 setrecentOrders(Orders.data );
-                convObjToArry(processingOrders, setrecentOrders);
+                convObjToArry(Orders, setrecentOrders);
               
+                const Emp = await axios.get(`${BASE_URL2}/employee`);
+                setemployees(Emp.data );
+                convObjToArry(Emp, setemployees);
+                
               
             } catch (error) {toast.error('Error fetching data');}
                 
@@ -125,7 +129,7 @@ const FactoryManagementDashboard = () => {
         <div className="col-12 col-md-3">
           <div className="card card-custom text-center">
             <h5 className="card-title card-title-custom">Employee</h5>
-            <p className="card-text card-text-large">{employees}</p>
+            <p className="card-text card-text-large">{employees.length}</p>
           </div>
         </div>
 
@@ -208,7 +212,7 @@ const FactoryManagementDashboard = () => {
           <div className="card card-processing">
             <h5 className="card-title card-title-custom">processing oders</h5>
             <div className="scrollable-content">
-              {processingOrders
+              {Workoder
               .filter((order) => order.order_status == "processing") 
               .map((order) => ( 
                 <div key={order.work_order_Id} className="processing-order-item">
