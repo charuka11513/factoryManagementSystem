@@ -9,28 +9,28 @@ const Header = () => {
         className="flex-sm-fill text-sm-center nav-link" 
         to="/work-order-details" 
         activeClassName="active"
-        exact >Home</NavLink>
+        exact ></NavLink>
      
         
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
         to="/sidebar" 
-        activeClassName="active">dash</NavLink>
+        activeClassName="active"></NavLink>
       
         
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
         to="/AdminLoging" 
-        activeClassName="active"> AdminLoging</NavLink>
+        activeClassName="active">Loging</NavLink>
       
        
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link " 
         to="/3" 
-        activeClassName="active"> Disabled </NavLink>
+        activeClassName="active">  </NavLink>
      
        
       
