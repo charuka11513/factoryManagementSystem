@@ -46,7 +46,7 @@
   
   /* Clock styling */
   .clock-date-time {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     margin-bottom: 10px;
     color: #007bff;
   }
@@ -147,3 +147,26 @@
     align-items: center;
     justify-content: center;
   }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      z-index: 1000;
+      width: 250px;
+      top: 0;
+      left: 0;
+    }}
+    body, html {
+      margin: 0;
+      padding-right: 15%;
+      height: 100%;
+      width: 100%;
+    }
+    .container-fluid {
+      height: 100vh;
+      width: 90vw;
+      margin: auto auto;
+    }

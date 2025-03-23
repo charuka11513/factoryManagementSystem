@@ -3,21 +3,26 @@ import { Nav, Container, Row, Col, Tab } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { AuthContext } from '../TEST/context/AuthContext';
+import { useNavigate } from 'react-router-dom'; 
 //import '../workoderManager/';
-// import FactoryLogo from './assets/factory-logo.png';
+// import FactoryLogo from './asset
 
 import Workoder from './workOders';
 import Dashboard from './dashboard';
 
 
-
 const AdminProfile = () => {
   const { user } = useContext(AuthContext);
  const [activeTab, setActiveTab] = useState('dashboard');
+ const navigate = useNavigate();
+
+ const handleLogout = () => {  navigate('/AdminLoging');};
+
+
 
   return (
  <Container fluid className="mt-6" class="m-0" >  
- <Row className="min-vh-100">
+   <Row className="min-vh-100 ">
       <Col md={2} lg={2} className="bg-light text-black p-0 m-0 ">
 
         <Nav variant="pills" className="flex-column">
@@ -76,7 +81,7 @@ const AdminProfile = () => {
           
           {/* Logout button at bottom */}
           <div className="mt-auto" style={{ position: 'absolute', bottom: '-150px', left: '150px' }}>
-            <Nav.Link className="d-flex align-items-center py-2 px-3 text-black">
+            <Nav.Link onClick={handleLogout} className="d-flex align-items-center py-2 px-3 text-black">
               <span className="me-2">logout</span>
               <i className="fas fa-sign-out-alt"></i>
             </Nav.Link>

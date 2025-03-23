@@ -16,14 +16,14 @@ const Header = () => {
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
         to="/sidebar" 
-        activeClassName="active">Longer nav link</NavLink>
+        activeClassName="active">dash</NavLink>
       
         
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
-        to="/link" 
-        activeClassName="active"> Link</NavLink>
+        to="/AdminLoging" 
+        activeClassName="active"> AdminLoging</NavLink>
       
        
       

@@ -8,19 +8,25 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BASE_URL2 } from '../TEST/Utils/config';
 
 
+
 import '../workoderManager/dashboard.css';  //css import
 
 
 const FactoryManagementDashboard = () => {
-    const [reviews, setReviews] = useState([]);
-    //const [materials, setmaterials] = useState([]);
+    const [currentTime, setCurrentTime] = useState(new Date());// State for current time
+
+    const [Workoder, setWorkoder] = useState([]);
     const [processingOrders, setprocessingOrders] = useState([]);
-    //const [reviews, setReviews] = useState([]);
+    const [recentOrders, setrecentOrders] = useState([]);
+    //const [employees, setemployees] = useState([]);
+    //const [materials, setmaterials] = useState([]);
   
    const convObjToArry = (response,setveriale) => {
     if (response && Array.isArray(response.data.data)) {
       setveriale(response.data.data); } 
       else { setveriale([]); }};
+
+ 
 
   const [employees] = useState(15);
     const [materials] = useState([
@@ -30,28 +36,27 @@ const FactoryManagementDashboard = () => {
     { name: 'Material 4', value: 55 },
     { name: 'Material 5', value: 45 },
   ]);
-  const [recentOrders] = useState([
-    { id: 1, name: 'Order #001', date: '2024-06-08' },
-    { id: 2, name: 'Order #002', date: '2024-06-07' },
-  ]);
-
-  // State for current time
-  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  const REFRESH_INTERVAL = 300;
 
   // Update time every second
         useEffect(() => {
+          
             const fetchData = async () => {
             try {
                 const timer = setInterval(() => {setCurrentTime(new Date()); }, 1000);  
                 
                 const oderResponse = await axios.get(`${BASE_URL2}/WorkOder`);
-                setReviews(oderResponse.data);
-                convObjToArry(oderResponse, setReviews);
+                setWorkoder(oderResponse.data);
+                convObjToArry(oderResponse, setWorkoder);
 
                 const processingOrders = await axios.get(`${BASE_URL2}/WorkOder`);
                 setprocessingOrders(processingOrders.data);
                 convObjToArry(processingOrders, setprocessingOrders);
                 
+                const Orders = await axios.get(`${BASE_URL2}/WorkOder`);
+                setrecentOrders(Orders.data );
+                convObjToArry(processingOrders, setrecentOrders);
               
               
             } catch (error) {toast.error('Error fetching data');}
@@ -59,6 +64,13 @@ const FactoryManagementDashboard = () => {
             
            };
             fetchData();  // Animate cards on load
+            const timeIntervalId = setInterval(() => {
+              setCurrentTime(new Date());
+            }, 1000);
+            const dataIntervalId = setInterval(() => {
+              fetchData();
+            }, REFRESH_INTERVAL);
+
             $('.card').addClass('animate__animated animate__fadeInUp');
             $('.card').hover(
             function () { $(this).addClass('shadow-lg').css('cursor', 'pointer'); },
@@ -66,6 +78,7 @@ const FactoryManagementDashboard = () => {
             );
             
             //return () => clearInterval(timer);
+            return () =>clearInterval(dataIntervalId);
         }, []); 
 
     
@@ -81,8 +94,8 @@ const FactoryManagementDashboard = () => {
         style={{
           height: `${material.value * 2}px`,
           backgroundColor: colors[index % colors.length],
-          width: '55px',  // Adjust width if needed
-          margin: '0 auto' // Center the bars
+          width: '55px',  
+          margin: '0 auto' 
         }}
       ></div>
       
@@ -104,7 +117,7 @@ const FactoryManagementDashboard = () => {
         <div className="col-12 col-md-3">
           <div className="card card-custom text-center">
             <h5 className="card-title card-title-custom">orders</h5>
-            <p className="card-text card-text-large">{reviews.length}</p>
+            <p className="card-text card-text-large">{Workoder.length}</p>
           </div>
         </div>
 
@@ -119,8 +132,10 @@ const FactoryManagementDashboard = () => {
          {/* Employees Card */}
         <div className="col-12 col-md-3">
           <div className="card card-custom text-center">
-            <h5 className="card-title card-title-custom">Employee</h5>
-            <p className="card-text card-text-large">{employees}</p>
+            <h5 className="card-title card-title-custom">pending process</h5>
+            <p className="card-text card-text-large">{/*Workoder.length*/}
+            {Workoder.filter(order => order.order_status == "Pending").length}
+            </p>
           </div>
         </div>
 
@@ -214,7 +229,6 @@ const FactoryManagementDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Orders and Active Process */}
       <div className="row">
         {/* Recent Orders */}
         <div className="col-12 col-md-6">
@@ -224,8 +238,8 @@ const FactoryManagementDashboard = () => {
               {recentOrders.length > 0 ? (
                 recentOrders.map((order) => (
                   <div key={order.id} className="recent-order-item">
-                    <h6 className="order-name">{order.name}</h6>
-                    <p className="order-description">Date: {order.date}</p>
+                    <h6 className="order-name">{order.work_order_Id}</h6>
+                    <p className="order-description">Date: {order.deadline_date}</p>
                   </div>
                 ))
               ) : (
