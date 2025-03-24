@@ -9,6 +9,7 @@ const workSchema = mongoose.Schema(
     Total_Price: { type: String, required: true },
     Payment_status: {type: String, required: true},
     Delivery_status: { type: String, required: true },
+    Date: {type: String, required: true},
   },
   
 );
