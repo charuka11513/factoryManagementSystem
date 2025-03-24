@@ -1,0 +1,47 @@
+.card {
+    border: none;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 500;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  h3 {
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  h4 {
+    font-weight: 600;
+  }
+  
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+  }
+  
+  .form-control {
+    border-left: none;
+  }
+  
+  .form-control:focus {
+    box-shadow: none;
+    border-color: #007bff;
+  }
+  .login-section {
+    /*background: url('../assets/images/login\ background.jpg') no-repeat center center; /* Replace with the actual path to your image */
+    /*background-size: cover; /* Ensures the image covers the entire section */
+    min-height: 100vh;
+    min-width: 100vh;
+    display: flex;
+    align-items: center;
+    padding-left: 45%;
+}
