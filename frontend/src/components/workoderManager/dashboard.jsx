@@ -53,6 +53,7 @@ const FactoryManagementDashboard = () => {
                 /*const processingOrders = await axios.get(`${BASE_URL2}/WorkOder`);
                 setprocessingOrders(processingOrders.data);
                 convObjToArry(processingOrders, setprocessingOrders);*/
+                
 
                 const Orders = await axios.get(`${BASE_URL2}/SalesOrder`); 
                 setrecentOrders(Orders.data );
