@@ -26,7 +26,7 @@ const FactoryManagementDashboard = () => {
       setveriale(response.data.data); } 
       else { setveriale([]); }};
 
- 
+     
 
   //const [employees] = useState(15);
     const [materials] = useState([
@@ -37,7 +37,7 @@ const FactoryManagementDashboard = () => {
     { name: 'Material 5', value: 45 },
   ]);
   
-  const REFRESH_INTERVAL = 300;
+  const REFRESH_INTERVAL = 6000;
 
   // Update time every second
         useEffect(() => {
@@ -53,10 +53,11 @@ const FactoryManagementDashboard = () => {
                 /*const processingOrders = await axios.get(`${BASE_URL2}/WorkOder`);
                 setprocessingOrders(processingOrders.data);
                 convObjToArry(processingOrders, setprocessingOrders);*/
-                
-                const Orders = await axios.get(`${BASE_URL2}/WorkOder`); 
+
+                const Orders = await axios.get(`${BASE_URL2}/SalesOrder`); 
                 setrecentOrders(Orders.data );
                 convObjToArry(Orders, setrecentOrders);
+                
               
                 const Emp = await axios.get(`${BASE_URL2}/employee`);
                 setemployees(Emp.data );
@@ -110,6 +111,8 @@ const FactoryManagementDashboard = () => {
     </div>
   ));
 };
+
+
   return (
     <div className="dashboard-container">
       {/* Header */}
@@ -121,7 +124,7 @@ const FactoryManagementDashboard = () => {
         <div className="col-12 col-md-3">
           <div className="card card-custom text-center">
             <h5 className="card-title card-title-custom">orders</h5>
-            <p className="card-text card-text-large">{Workoder.length}</p>
+            <p className="card-text card-text-large">{recentOrders.length}</p>
           </div>
         </div>
 
@@ -138,7 +141,7 @@ const FactoryManagementDashboard = () => {
           <div className="card card-custom text-center">
             <h5 className="card-title card-title-custom">pending process</h5>
             <p className="card-text card-text-large">{/*Workoder.length*/}
-            {Workoder.filter(order => order.order_status == "Pending").length}
+            {Workoder.filter(oderResponse => oderResponse.order_status == "Pending").length}
             </p>
           </div>
         </div>
@@ -213,17 +216,17 @@ const FactoryManagementDashboard = () => {
             <h5 className="card-title card-title-custom">processing oders</h5>
             <div className="scrollable-content">
               {Workoder
-              .filter((order) => order.order_status == "processing") 
-              .map((order) => ( 
-                <div key={order.work_order_Id} className="processing-order-item">
+              .filter((oderResponse) => oderResponse.order_status == "processing") 
+              .map((oderResponse) => ( 
+                <div key={oderResponse.work_order_Id} className="processing-order-item">
                   <div>
                     <h6 className="order-name">
                       <span role="img" aria-label="star">
                         ⭐
                       </span>{' '}
-                      {order.product}
+                      {oderResponse.product}
                     </h6>
-                    <p className="order-description">{order.quentity}</p>
+                    <p className="order-description">{oderResponse.quentity}</p>
                   </div>
                   <span className="arrow-up">↑</span>
                 </div>
@@ -240,10 +243,10 @@ const FactoryManagementDashboard = () => {
             <h5 className="card-title card-title-custom">recent oders</h5>
             <div className="scrollable-content">
               {recentOrders.length > 0 ? (
-                recentOrders.map((order) => (
-                  <div key={order.id} className="recent-order-item">
-                    <h6 className="order-name">{order.work_order_Id}</h6>
-                    <p className="order-description">Date: {order.deadline_date}</p>
+                recentOrders.map((recentOrders) => (
+                  <div key={recentOrders.id} className="recent-order-item">
+                    <h6 className="order-name">{recentOrders.Product_Ordered}</h6>
+                    <p className="order-description">Date: {}</p>
                   </div>
                 ))
               ) : (
