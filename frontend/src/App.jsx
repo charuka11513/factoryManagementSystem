@@ -7,6 +7,7 @@ import AdminProfile from './components/workoderManager/adminProfile';
 import AdminLoging from './components/Loging/loging';
 import HOME from './components/Home/homePage';
 
+
 function App() {
   return (
     <div className="App">
@@ -17,7 +18,9 @@ function App() {
           <Route path="/work-order-details" element={<WorkOder />} />
           <Route path="/sidebar" element={<AdminProfile/>} />
           <Route path="/AdminLoging"element={<AdminLoging />} />
-          
+
+          {/*  */}
+        
 
         </Routes>
       </Router>
