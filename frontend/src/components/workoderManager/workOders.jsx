@@ -181,7 +181,25 @@ const WorkOrders = () => {
       console.error('PDF generation error:', error);
     }
   }; 
-  
+  //status changer 
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await axios.put(`${BASE_URL2}/WorkOder_update`, { id, order_status: newStatus });
+      setInventory(prev => 
+        prev.map(item => 
+          item._id === id ? { ...item, order_status: newStatus } : item
+        )
+      );
+      setFiltereDatails(prev => 
+        prev.map(item => 
+          item._id === id ? { ...item, order_status: newStatus } : item
+        )
+      );
+      message.success("Status updated successfully");
+    } catch (error) {
+      toast.error('Failed to update status');
+    }
+  };
   ////////////////////////////////////////////////////email//////////////////////////////////////////////
 
 
