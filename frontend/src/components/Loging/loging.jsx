@@ -36,7 +36,7 @@ const Login = () => {
       }
 
       const orderResponse = await axios.get(`${BASE_URL2}/admin`);
-      console.log('dAAAAA', orderResponse);
+      console.log('dAAAAA', orderResponse.data);
       const adminData = Array.isArray(orderResponse.data.data)
         ? orderResponse.data.data[0]
         : orderResponse.data.data[0];
