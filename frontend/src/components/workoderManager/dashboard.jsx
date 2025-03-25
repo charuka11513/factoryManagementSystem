@@ -115,12 +115,12 @@ const FactoryManagementDashboard = () => {
 
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container  ">
       {/* Header */}
       <h1 className="dashboard-title">FACTORY MANAGEMENT</h1>
 
       {/* Orders, Employees, and Clock */}
-      <div className="row mb-4">
+      <div className="row mb-4 wh-100">
         {/* Orders Card */}
         <div className="col-12 col-md-3">
           <div className="card card-custom text-center">
