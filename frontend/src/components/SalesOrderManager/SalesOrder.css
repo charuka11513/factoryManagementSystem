@@ -1,0 +1,44 @@
+.sales-order-container {
+  max-width: 1050px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 60%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.new-order-btn {
+  background-color: #1890ff;
+  color: white;
+  border-radius: 5px;
+}
+
+.ant-table {
+  border-radius: 8px;
+}
+
+.pdf-btn {
+  display: block;
+  margin: 20px auto;
+  background-color: #1890ff;
+  color: white;
+  border-radius: 5px;
+}

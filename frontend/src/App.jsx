@@ -1,20 +1,21 @@
+// D:\zzzzzzzzzzzzzzzzzzzzzzzzzz\factoryManagementSystem\frontend\src\App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-
-import Header from './components/header/header';
-import WorkOder from './components/workoderManager/workOders';
+import Header from './components/header/Header';
+import WorkOrders from './components/workoderManager/workOders';
+import SalesOrder from './components/SalesOrderManager/SalesOrder';
+import InventoryMaterial from './components/InventoryMaterialManager/InventoryMaterial';
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <Routes>
-          {/* Correctly define the Route with a valid path */}
-          <Route path="/work-order-details" element={<WorkOder />} />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/work-order-details" element={<WorkOrders />} />
+        <Route path="/SalesOrder-details" element={<SalesOrder />} />
+        <Route path="/inventory-details" element={<InventoryMaterial />} />
+      </Routes>
+    </Router>
   );
 }
 
