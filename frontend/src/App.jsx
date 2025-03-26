@@ -1,6 +1,11 @@
+// D:\zzzzzzzzzzzzzzzzzzzzzzzzzz\factoryManagementSystem\frontend\src\App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
+
+
+import SalesOrder from './components/SalesOrderManager/SalesOrder';
+import InventoryMaterial from './components/InventoryMaterialManager/InventoryMaterial';
 import Header from './components/header/header';
 import WorkOder from './components/workoderManager/workOders';
 import AdminProfile from './components/workoderManager/adminProfile';
@@ -20,14 +25,20 @@ function App() {
           <Route path="/sidebar" element={<AdminProfile/>} />
           <Route path="/AdminLoging"element={<AdminLoging />} />
 
+
           <Route path="/AdminAdd"element={<AdminCreate />} />
 
           {/*  */}
-        
+         
+        <Route path="/SalesOrder-details" element={<SalesOrder />} />
+        <Route path="/inventory-details" element={<InventoryMaterial />} />
+          
+
 
         </Routes>
       </Router>
     </div>
+
   );
 }
 

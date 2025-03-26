@@ -1,0 +1,65 @@
+/* frontend/src/InventoryMaterialManager/InventoryMaterial.css */
+.inventory-container {
+    width: 80%;
+    margin: 20px auto;
+    font-family: sans-serif;
+  }
+  
+  .inventory-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .inventory-form input {
+    width: 48%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .inventory-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .inventory-table th,
+  .inventory-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .inventory-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .inventory-table button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .inventory-table button:first-child {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .inventory-table button:last-child {
+    background-color: #dc3545;
+    color: white;
+  }

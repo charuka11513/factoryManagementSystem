@@ -17,6 +17,7 @@ const Admins = require("./Routes/admin_rout.js");
 const machine = require("./Routes/machine_routes.js");
 const employee = require("./Routes/employee_routes.js");
 const Sales = require("./Routes/SalesAndOrder.js");
+const Inventorys = require("./Routes/InventoryMaterial.js");
 
 
 
@@ -32,6 +33,7 @@ app.use("/",employee);
 
 app.use("/", WorkOder);
 app.use("/", Sales);
+app.use("/", Inventorys);
 
 
 mongoose.connect(process.env.MONGODB_URI)
