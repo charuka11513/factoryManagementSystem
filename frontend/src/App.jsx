@@ -11,6 +11,8 @@ import WorkOder from './components/workoderManager/workOders';
 import AdminProfile from './components/workoderManager/adminProfile';
 import AdminLoging from './components/Loging/loging';
 import HOME from './components/Home/homePage';
+import AdminCreate from './components/Loging/Admincreate';
+
 
 function App() {
   return (
@@ -22,10 +24,16 @@ function App() {
           <Route path="/work-order-details" element={<WorkOder />} />
           <Route path="/sidebar" element={<AdminProfile/>} />
           <Route path="/AdminLoging"element={<AdminLoging />} />
-            
+
+
+          <Route path="/AdminAdd"element={<AdminCreate />} />
+
+          {/*  */}
+         
         <Route path="/SalesOrder-details" element={<SalesOrder />} />
         <Route path="/inventory-details" element={<InventoryMaterial />} />
           
+
 
         </Routes>
       </Router>

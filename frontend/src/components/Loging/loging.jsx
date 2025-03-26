@@ -35,20 +35,26 @@ const Login = () => {
         throw new Error('Please fill in all fields');
       }
 
+      // Fetch all admin data
       const orderResponse = await axios.get(`${BASE_URL2}/admin`);
-      console.log('dAAAAA', orderResponse);
-      const adminData = Array.isArray(orderResponse.data.data)
-        ? orderResponse.data.data[0]
-        : orderResponse.data.data[0];
+      console.log('Fetched Admin Data:', orderResponse.data);
 
-      if (
-        adminData.adminName === formData.username &&
-        adminData.password === formData.password
-      ) {
+      // Check if the response is an array
+      const adminData = Array.isArray(orderResponse.data.data)
+        ? orderResponse.data.data
+        : [orderResponse.data.data];  // If the response is a single admin, convert it into an array
+
+      // Find the admin who matches the username and password
+      const matchedAdmin = adminData.find(
+        (admin) => admin.adminName === formData.username && admin.password === formData.password
+      );
+
+      if (matchedAdmin) {
         console.log('Login successful');
         localStorage.setItem('isAuthenticated', 'true');
 
-        switch (adminData.position) {
+        // Navigate based on position
+        switch (matchedAdmin.position) {
           case 'ProductAndWorkoderManager':
             navigate('/sidebar');
             break;
