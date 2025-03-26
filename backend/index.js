@@ -13,6 +13,7 @@ app.use(cors());
 //declare the parth hear
 const WorkOder = require("./Routes/workoder_routes.js");
 const Sales = require("./Routes/SalesAndOrder.js");
+const Inventorys = require("./Routes/InventoryMaterial.js");
 
 
 
@@ -22,6 +23,7 @@ app.get('/',(req,res)=>res.send("Helow server is running .."));
 
 app.use("/", WorkOder);
 app.use("/", Sales);
+app.use("/", Inventorys);
 
 
 
