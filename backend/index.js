@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require("dotenv").config();
 const cors = require('cors');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 const app = express();
 
 require("dotenv").config(); 
@@ -12,21 +12,28 @@ app.use(cors());
 
 //declare the parth hear
 const WorkOder = require("./Routes/workoder_routes.js");
+
+const Admins = require("./Routes/admin_rout.js");
+const machine = require("./Routes/machine_routes.js");
+const employee = require("./Routes/employee_routes.js");
 const Sales = require("./Routes/SalesAndOrder.js");
 const Inventorys = require("./Routes/InventoryMaterial.js");
 
 
 
 
+
 app.get('/',(req,res)=>res.send("Helow server is running .."));
+
+app.use("/", WorkOder);
+app.use("/",Admins);
+app.use("/",machine);
+app.use("/",employee);
 
 
 app.use("/", WorkOder);
 app.use("/", Sales);
 app.use("/", Inventorys);
-
-
-
 
 
 mongoose.connect(process.env.MONGODB_URI)
