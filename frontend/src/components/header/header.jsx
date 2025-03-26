@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
+import '../header/header.css';
 const Header = () => {
   return (
     <nav className="nav nav-pills flex-column flex-sm-row">
@@ -9,28 +9,28 @@ const Header = () => {
         className="flex-sm-fill text-sm-center nav-link" 
         to="/work-order-details" 
         activeClassName="active"
-        exact >Home</NavLink>
+        exact ></NavLink>
      
         
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
-        to="/slink" 
-        activeClassName="active">Longer nav link</NavLink>
+        to="/sidebar" 
+        activeClassName="active"></NavLink>
       
         
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link" 
-        to="/link" 
-        activeClassName="active"> Link</NavLink>
+        to="/AdminLoging" 
+        activeClassName="active">Loging</NavLink>
       
        
       
       <NavLink 
         className="flex-sm-fill text-sm-center nav-link " 
         to="/3" 
-        activeClassName="active"> Disabled </NavLink>
+        activeClassName="active">  </NavLink>
      
        
       
