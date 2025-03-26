@@ -219,7 +219,7 @@ const MachineManager = () => {
  
   
   return (
-    <div className="container">
+    <div className="container wh-100">
       <h1 className="page-title">Machine Management</h1>
       <div className="search-container">
         <div className="search-wrapper">

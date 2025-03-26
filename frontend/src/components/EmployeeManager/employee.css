@@ -24,7 +24,9 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: #f5f7ff;
   margin: 0;
+ 
   padding: 20px;
+  display: flex;
   color: #333;
   line-height: 1.6;
 }
@@ -32,7 +34,7 @@ body {
 /* Main Container */
 .employee-container {
   padding: 2.5rem;
-  max-width: 1300px;
+  width: 90vw;
   margin: 0 auto;
   background-color: #fff;
   border-radius: var(--border-radius);
