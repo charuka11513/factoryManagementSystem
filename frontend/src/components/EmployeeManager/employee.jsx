@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+//import { generateEmployeePDF } from "./pdfGenaretion.js";
 import "./employee.css";
 
 const EmployeeManager = () => {
@@ -86,18 +85,14 @@ const EmployeeManager = () => {
     try {
       const employeeData = {
         ...newEmployee,
-        _id: newEmployee.employee_Id // Add _id matching employee_Id as per schema
+        _id: newEmployee.employee_Id,
       };
-      await axios.post(
-        "http://localhost:3001/employee_create",
-        employeeData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      await fetchEmployees(); // Refresh the list
+      await axios.post("http://localhost:3001/employee_create", employeeData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      await fetchEmployees();
       setShowForm(false);
       setNewEmployee({
         employee_Id: "",
@@ -110,7 +105,7 @@ const EmployeeManager = () => {
       alert("Employee added successfully!");
     } catch (error) {
       console.error("Error adding employee:", error);
-      alert(`Failed to add employee. ${error.response?.data?.message || 'Please try again.'}`);
+      alert(`Failed to add employee. ${error.response?.data?.message || "Please try again."}`);
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +113,7 @@ const EmployeeManager = () => {
 
   const handleDeleteEmployee = async (id) => {
     if (!window.confirm("Are you sure you want to delete this employee?")) return;
-    
+
     setIsLoading(true);
     try {
       await axios.delete(`http://localhost:3001/employee_delete/${id}`);
@@ -126,7 +121,7 @@ const EmployeeManager = () => {
       alert("Employee deleted successfully!");
     } catch (error) {
       console.error("Error deleting employee:", error);
-      alert(`Failed to delete employee. ${error.response?.data?.message || 'Please try again.'}`);
+      alert(`Failed to delete employee. ${error.response?.data?.message || "Please try again."}`);
     } finally {
       setIsLoading(false);
     }
@@ -138,65 +133,53 @@ const EmployeeManager = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-    if (!editingEmployee || !editingEmployee._id) {
-      alert("Invalid employee data");
+  
+    // Validation for update form
+    const errors = validateUpdateForm();
+    if (Object.keys(errors).length > 0) {
+      alert("Please correct the errors before submitting."); // Replace with toast.error if using a toast library
       return;
     }
-
+  
     setIsLoading(true);
     try {
-      const updatedData = {
-        id: editingEmployee._id,
-        fullName: editingEmployee.fullName,
-        jobRole: editingEmployee.jobRole,
-        shift: editingEmployee.shift,
-        assignedMachineID: editingEmployee.assignedMachineID,
-        attendanceRecord: editingEmployee.attendanceRecord,
-      };
-
       await axios.put(
         "http://localhost:3001/employee_update",
-        updatedData,
-        { headers: { 'Content-Type': 'application/json' } }
+        { id: editingEmployee._id, ...editingEmployee },
+        //{ headers: { "Content-Type": "application/json" } }
       );
-
-      await fetchEmployees(); // Refresh the list
+      await fetchEmployees(); // Refresh the employee list
       setEditingEmployee(null);
-      alert("Employee updated successfully");
+      alert("Updated successfully"); // Replace with toast.success if using a toast library
     } catch (error) {
       console.error("Error updating employee:", error);
-      alert(`Failed to update employee. ${error.response?.data?.message || 'Please try again.'}`);
+      alert("Failed to update"); // Replace with toast.error if using a toast library
     } finally {
       setIsLoading(false);
     }
   };
-
-  const generatePDF = () => {
-    try {
-      const doc = new jsPDF();
-      doc.text("Employee Report", 20, 10);
   
-      if (employees.length === 0) {
-        doc.text("No employee data available", 20, 20);
-      } else {
-        doc.autoTable({
-          head: [
-            ["ID", "Full Name", "Job Role", "Shift", "Machine ID", "Attendance"],
-          ],
-          body: employees.map((emp) => [
-            emp.employee_Id || "N/A",
-            emp.fullName || "N/A",
-            emp.jobRole || "N/A",
-            emp.shift || "N/A",
-            emp.assignedMachineID || "N/A",
-            emp.attendanceRecord || "N/A",
-          ]),
-          startY: 20,
-        });
-      }
-      doc.save("Employee_Report.pdf");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
+  // New validation function for update form
+  const validateUpdateForm = () => {
+    let tempErrors = {};
+  
+    if (!editingEmployee.fullName.trim()) {
+      tempErrors.fullName = "Full name is required";
+    }
+    if (!editingEmployee.jobRole.trim()) {
+      tempErrors.jobRole = "Job role is required";
+    }
+    if (!editingEmployee.shift.trim()) {
+      tempErrors.shift = "Shift is required";
+    }
+  
+    setErrors(tempErrors); // Assuming errors state is reused for update form
+    return tempErrors;
+  };
+
+  const handleGeneratePDF = () => {
+    const success = generateEmployeePDF(employees);
+    if (!success) {
       alert("Failed to generate PDF. Please try again.");
     }
   };
@@ -214,14 +197,16 @@ const EmployeeManager = () => {
         <div className="header-buttons">
           <button
             className="generate-pdf-btn"
-            onClick={generatePDF}
-            disabled={employees.length === 0}
+            onClick={handleGeneratePDF}
+            disabled={employees.length === 0 || isLoading}
+            title={employees.length === 0 ? "No employees to generate PDF" : "Generate PDF report"}
           >
             <i className="fas fa-file-pdf"></i> Generate PDF
           </button>
           <button
             className="machine-btn"
             onClick={() => navigate("/machines-details")}
+            title="View machine details"
           >
             <i className="fas fa-cogs"></i> Machine Details
           </button>
@@ -237,11 +222,13 @@ const EmployeeManager = () => {
             className="search-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            disabled={isLoading}
           />
         </div>
         <button
           className="new-employee-btn"
           onClick={() => setShowForm(!showForm)}
+          disabled={isLoading}
         >
           <i className="fas fa-user-plus"></i> {showForm ? "Cancel" : "New Employee"}
         </button>
@@ -261,6 +248,7 @@ const EmployeeManager = () => {
                 value={newEmployee.employee_Id}
                 onChange={handleInputChange}
                 className={errors.employee_Id ? "error-input" : ""}
+                disabled={isLoading}
               />
               {errors.employee_Id && <span className="error-text">{errors.employee_Id}</span>}
             </div>
@@ -275,10 +263,9 @@ const EmployeeManager = () => {
                 value={newEmployee.fullName}
                 onChange={handleInputChange}
                 className={errors.fullName ? "error-input" : ""}
+                disabled={isLoading}
               />
-              {errors.fullName && (
-                <span className="error-text">{errors.fullName}</span>
-              )}
+              {errors.fullName && <span className="error-text">{errors.fullName}</span>}
             </div>
 
             <div className="form-group">
@@ -291,10 +278,9 @@ const EmployeeManager = () => {
                 value={newEmployee.jobRole}
                 onChange={handleInputChange}
                 className={errors.jobRole ? "error-input" : ""}
+                disabled={isLoading}
               />
-              {errors.jobRole && (
-                <span className="error-text">{errors.jobRole}</span>
-              )}
+              {errors.jobRole && <span className="error-text">{errors.jobRole}</span>}
             </div>
 
             <div className="form-group">
@@ -305,6 +291,7 @@ const EmployeeManager = () => {
                 value={newEmployee.shift}
                 onChange={handleInputChange}
                 className={errors.shift ? "error-input" : ""}
+                disabled={isLoading}
               >
                 <option value="">Select shift</option>
                 <option value="Morning">Morning</option>
@@ -312,9 +299,7 @@ const EmployeeManager = () => {
                 <option value="Night">Night</option>
                 <option value="Day">Day</option>
               </select>
-              {errors.shift && (
-                <span className="error-text">{errors.shift}</span>
-              )}
+              {errors.shift && <span className="error-text">{errors.shift}</span>}
             </div>
 
             <div className="form-group">
@@ -326,6 +311,7 @@ const EmployeeManager = () => {
                 placeholder="Enter machine ID"
                 value={newEmployee.assignedMachineID}
                 onChange={handleInputChange}
+                disabled={isLoading}
               />
             </div>
 
@@ -336,6 +322,7 @@ const EmployeeManager = () => {
                 name="attendanceRecord"
                 value={newEmployee.attendanceRecord}
                 onChange={handleInputChange}
+                disabled={isLoading}
               >
                 <option value="">Select attendance</option>
                 <option value="Present">Present</option>
@@ -345,7 +332,7 @@ const EmployeeManager = () => {
 
             <div className="form-actions">
               <button type="submit" className="add-btn" disabled={isLoading}>
-                <i className="fas fa-save"></i> Save Employee
+                <i className="fas fa-save"></i> {isLoading ? "Saving..." : "Save Employee"}
               </button>
               <button
                 type="button"
@@ -366,18 +353,15 @@ const EmployeeManager = () => {
           <form onSubmit={handleUpdateSubmit}>
             <div className="form-group">
               <label>Employee ID</label>
-              <input
-                type="text"
-                value={editingEmployee.employee_Id}
-                disabled
-              />
+              <input type="text" value={editingEmployee.employee_Id} disabled />
             </div>
             <div className="form-group">
               <label>Full Name*</label>
               <input
                 type="text"
                 value={editingEmployee.fullName}
-                onChange={(e) => setEditingEmployee({...editingEmployee, fullName: e.target.value})}
+                onChange={(e) => setEditingEmployee({ ...editingEmployee, fullName: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="form-group">
@@ -385,14 +369,16 @@ const EmployeeManager = () => {
               <input
                 type="text"
                 value={editingEmployee.jobRole}
-                onChange={(e) => setEditingEmployee({...editingEmployee, jobRole: e.target.value})}
+                onChange={(e) => setEditingEmployee({ ...editingEmployee, jobRole: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="form-group">
               <label>Shift*</label>
               <select
                 value={editingEmployee.shift}
-                onChange={(e) => setEditingEmployee({...editingEmployee, shift: e.target.value})}
+                onChange={(e) => setEditingEmployee({ ...editingEmployee, shift: e.target.value })}
+                disabled={isLoading}
               >
                 <option value="">Select shift</option>
                 <option value="Morning">Morning</option>
@@ -406,14 +392,16 @@ const EmployeeManager = () => {
               <input
                 type="text"
                 value={editingEmployee.assignedMachineID}
-                onChange={(e) => setEditingEmployee({...editingEmployee, assignedMachineID: e.target.value})}
+                onChange={(e) => setEditingEmployee({ ...editingEmployee, assignedMachineID: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="form-group">
               <label>Attendance Record</label>
               <select
                 value={editingEmployee.attendanceRecord}
-                onChange={(e) => setEditingEmployee({...editingEmployee, attendanceRecord: e.target.value})}
+                onChange={(e) => setEditingEmployee({ ...editingEmployee, attendanceRecord: e.target.value })}
+                disabled={isLoading}
               >
                 <option value="">Select attendance</option>
                 <option value="Present">Present</option>
@@ -422,7 +410,7 @@ const EmployeeManager = () => {
             </div>
             <div className="form-actions">
               <button type="submit" className="add-btn" disabled={isLoading}>
-                <i className="fas fa-save"></i> Update Employee
+                <i className="fas fa-save"></i> {isLoading ? "Updating..." : "Update Employee"}
               </button>
               <button
                 type="button"
@@ -445,7 +433,7 @@ const EmployeeManager = () => {
         <div className="no-results">
           {employees.length === 0
             ? "No employees found. Add a new employee to get started."
-            : "No matching employees found."}
+            : "No matching employees found for your search."}
         </div>
       ) : (
         <div className="table-container">
@@ -475,6 +463,7 @@ const EmployeeManager = () => {
                       className="update-btn"
                       onClick={() => handleUpdateEmployee(emp)}
                       disabled={isLoading}
+                      title="Update employee"
                     >
                       <i className="fas fa-edit"></i> Update
                     </button>
@@ -482,6 +471,7 @@ const EmployeeManager = () => {
                       className="delete-btn"
                       onClick={() => handleDeleteEmployee(emp._id)}
                       disabled={isLoading}
+                      title="Delete employee"
                     >
                       <i className="fas fa-trash-alt"></i> Delete
                     </button>

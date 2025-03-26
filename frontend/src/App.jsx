@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Header />
+      
         <Routes>
           {/* Correctly define the Route with a valid path */}
           <Route path="/work-order-details" element={<WorkOder />} />
