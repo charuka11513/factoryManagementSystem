@@ -84,16 +84,20 @@ const EmployeeManager = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
+      const employeeData = {
+        ...newEmployee,
+        _id: newEmployee.employee_Id // Add _id matching employee_Id as per schema
+      };
+      await axios.post(
         "http://localhost:3001/employee_create",
-        newEmployee,
+        employeeData,
         {
           headers: {
             'Content-Type': 'application/json'
           }
         }
       );
-      setEmployees([...employees, response.data.data]);
+      await fetchEmployees(); // Refresh the list
       setShowForm(false);
       setNewEmployee({
         employee_Id: "",
@@ -118,7 +122,7 @@ const EmployeeManager = () => {
     setIsLoading(true);
     try {
       await axios.delete(`http://localhost:3001/employee_delete/${id}`);
-      setEmployees(employees.filter((emp) => emp.employee_Id !== id));
+      setEmployees(employees.filter((emp) => emp._id !== id));
       alert("Employee deleted successfully!");
     } catch (error) {
       console.error("Error deleting employee:", error);
@@ -131,51 +135,42 @@ const EmployeeManager = () => {
   const handleUpdateEmployee = (employee) => {
     setEditingEmployee(employee);
   };
-//////////update
-const handleUpdateSubmit = async (e) => {
-  e.preventDefault();
-  if (!editingEmployee || !editingEmployee.employee_Id) {
-    alert("Invalid employee data");
-    return;
-  }
 
-  setIsLoading(true);
-  try {
-    const updatedData = {
-      fullName: editingEmployee.fullName,
-      jobRole: editingEmployee.jobRole,
-      shift: editingEmployee.shift,
-      assignedMachineID: editingEmployee.assignedMachineID,
-      attendanceRecord: editingEmployee.attendanceRecord,
-    };
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    if (!editingEmployee || !editingEmployee._id) {
+      alert("Invalid employee data");
+      return;
+    }
 
-    const updateUrl = `http://localhost:3001/employee_update/${editingEmployee.employee_Id}`; // Adjust if needed
-    console.log("Sending PUT request to:", updateUrl);
-    console.log("Data being sent:", updatedData);
+    setIsLoading(true);
+    try {
+      const updatedData = {
+        id: editingEmployee._id,
+        fullName: editingEmployee.fullName,
+        jobRole: editingEmployee.jobRole,
+        shift: editingEmployee.shift,
+        assignedMachineID: editingEmployee.assignedMachineID,
+        attendanceRecord: editingEmployee.attendanceRecord,
+      };
 
-    const response = await axios.put(
-      updateUrl,
-      updatedData,
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+      await axios.put(
+        "http://localhost:3001/employee_update",
+        updatedData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
-    if (response.data.success) {
-      setEmployees(employees.map(emp => 
-        emp.employee_Id === editingEmployee.employee_Id ? response.data.data : emp
-      ));
+      await fetchEmployees(); // Refresh the list
       setEditingEmployee(null);
       alert("Employee updated successfully");
-    } else {
-      alert("Error: " + (response.data.message || "Update failed"));
+    } catch (error) {
+      console.error("Error updating employee:", error);
+      alert(`Failed to update employee. ${error.response?.data?.message || 'Please try again.'}`);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Error updating employee:", error);
-    alert(`Failed to update employee. ${error.response?.data?.message || 'Please try again.'}`);
-  } finally {
-    setIsLoading(false);
-  }
-};
-/////////pdf
+  };
+
   const generatePDF = () => {
     try {
       const doc = new jsPDF();
@@ -468,7 +463,7 @@ const handleUpdateSubmit = async (e) => {
             </thead>
             <tbody>
               {filteredEmployees.map((emp) => (
-                <tr key={emp.employee_Id}>
+                <tr key={emp._id}>
                   <td>{emp.employee_Id || "N/A"}</td>
                   <td>{emp.fullName || "N/A"}</td>
                   <td>{emp.jobRole || "N/A"}</td>
@@ -485,7 +480,7 @@ const handleUpdateSubmit = async (e) => {
                     </button>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDeleteEmployee(emp._Id)}
+                      onClick={() => handleDeleteEmployee(emp._id)}
                       disabled={isLoading}
                     >
                       <i className="fas fa-trash-alt"></i> Delete
