@@ -3,6 +3,8 @@ import './App.css';
 
 import Header from './components/header/header';
 import WorkOder from './components/workoderManager/workOders';
+import Employees from './components/EmployeeManager/employee';
+import Machines from './components/MachineManager/machine';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Routes>
           {/* Correctly define the Route with a valid path */}
           <Route path="/work-order-details" element={<WorkOder />} />
+          <Route path="/employees-details" element={<Employees />} />
+          <Route path="/machines-details" element={<Machines />} />
         </Routes>
       </Router>
     </div>
