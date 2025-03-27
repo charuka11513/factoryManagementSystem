@@ -59,13 +59,13 @@ const Login = () => {
             navigate('/sidebar');
             break;
           case 'SalesAndOderManager':
-            navigate('/');
+            navigate('/SalesOrder-details');
             break;
           case 'MachineAndEmployeeManager':
-            navigate('/');
+            navigate('/employees-details');
             break;
           case 'InventoryAndMetirialManager':
-            navigate('/');
+            navigate('/inventory-details');
             break;
           default:
             navigate('/');

@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 
-const EmployeeSchema = new mongoose.Schema({
+
+const employeeSchema = new mongoose.Schema(
+  {
+    _id: { type: String, required: true }, 
+    employee_Id: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     jobRole: { type: String, required: true },
     shift: { type: String, required: true },
-    assignedMachineID: { type: String, required: true  },
-    attendanceRecord: { type: String, required: true }
-});
+    assignedMachineID: { type: String },
+    attendanceRecord: { type: String },
+  },
+  { timestamps: true }
+);
 
-const  employeemodel = mongoose.model('Employees', EmployeeSchema);
-module.exports = employeemodel;
+// Create and export the model
+const Employee = mongoose.model("Employee", employeeSchema);
+
+module.exports = Employee;
