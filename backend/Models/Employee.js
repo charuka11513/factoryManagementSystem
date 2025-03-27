@@ -5,10 +5,6 @@ const employeeSchema = new mongoose.Schema(
   {
     _id: { type: String, required: true }, 
     employee_Id: { type: String, required: true, unique: true },
-
-const EmployeeSchema = new mongoose.Schema({
-    employee_Id:{type:String, required:true, unique: true },
-
     fullName: { type: String, required: true },
     jobRole: { type: String, required: true },
     shift: { type: String, required: true },
