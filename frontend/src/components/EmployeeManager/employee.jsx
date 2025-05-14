@@ -1,8 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-//import { generateEmployeePDF } from "./pdfGenaretion.js";
-import "./employee.css";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardHeader,
+  CardBody,
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Table,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Spinner,
+  Alert,
+} from "reactstrap";
+import { FaSearch, FaPlus, FaEdit, FaTrash, FaFilePdf, FaCogs, FaSave, FaTimes } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import PDFGenerator from "./pdfGenaretion.jsx";
 
 const EmployeeManager = () => {
   const [employees, setEmployees] = useState([]);
@@ -32,7 +55,7 @@ const EmployeeManager = () => {
       setEmployees(response.data.data || []);
     } catch (error) {
       console.error("Error fetching employees:", error);
-      alert("Failed to fetch employees. Please try again.");
+      toast.error("Failed to fetch employees. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -102,10 +125,10 @@ const EmployeeManager = () => {
         assignedMachineID: "",
         attendanceRecord: "",
       });
-      alert("Employee added successfully!");
+      toast.success("Employee added successfully!");
     } catch (error) {
       console.error("Error adding employee:", error);
-      alert(`Failed to add employee. ${error.response?.data?.message || "Please try again."}`);
+      toast.error(`Failed to add employee. ${error.response?.data?.message || "Please try again."}`);
     } finally {
       setIsLoading(false);
     }
@@ -118,51 +141,59 @@ const EmployeeManager = () => {
     try {
       await axios.delete(`http://localhost:3001/employee_delete/${id}`);
       setEmployees(employees.filter((emp) => emp._id !== id));
-      alert("Employee deleted successfully!");
+      toast.success("Employee deleted successfully!");
     } catch (error) {
       console.error("Error deleting employee:", error);
-      alert(`Failed to delete employee. ${error.response?.data?.message || "Please try again."}`);
+      toast.error(`Failed to delete employee. ${error.response?.data?.message || "Please try again."}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleUpdateEmployee = (employee) => {
-    setEditingEmployee(employee);
+    setEditingEmployee({
+      ...employee,
+      employee_Id: employee.employee_Id || "",
+      fullName: employee.fullName || "",
+      jobRole: employee.jobRole || "",
+      shift: employee.shift || "",
+      assignedMachineID: employee.assignedMachineID || "",
+      attendanceRecord: employee.attendanceRecord || "",
+    });
+    setShowForm(true);
   };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validation for update form
+
     const errors = validateUpdateForm();
     if (Object.keys(errors).length > 0) {
-      alert("Please correct the errors before submitting."); // Replace with toast.error if using a toast library
+      toast.error("Please correct the errors before submitting.");
       return;
     }
-  
+
     setIsLoading(true);
     try {
       await axios.put(
         "http://localhost:3001/employee_update",
         { id: editingEmployee._id, ...editingEmployee },
-        //{ headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } }
       );
-      await fetchEmployees(); // Refresh the employee list
+      await fetchEmployees();
+      setShowForm(false);
       setEditingEmployee(null);
-      alert("Updated successfully"); // Replace with toast.success if using a toast library
+      toast.success("Employee updated successfully!");
     } catch (error) {
       console.error("Error updating employee:", error);
-      alert("Failed to update"); // Replace with toast.error if using a toast library
+      toast.error("Failed to update employee.");
     } finally {
       setIsLoading(false);
     }
   };
-  
-  // New validation function for update form
+
   const validateUpdateForm = () => {
     let tempErrors = {};
-  
+
     if (!editingEmployee.fullName.trim()) {
       tempErrors.fullName = "Full name is required";
     }
@@ -172,16 +203,9 @@ const EmployeeManager = () => {
     if (!editingEmployee.shift.trim()) {
       tempErrors.shift = "Shift is required";
     }
-  
-    setErrors(tempErrors); // Assuming errors state is reused for update form
-    return tempErrors;
-  };
 
-  const handleGeneratePDF = () => {
-    const success = generateEmployeePDF(employees);
-    if (!success) {
-      alert("Failed to generate PDF. Please try again.");
-    }
+    setErrors(tempErrors);
+    return tempErrors;
   };
 
   const filteredEmployees = employees.filter(
@@ -190,299 +214,261 @@ const EmployeeManager = () => {
       (emp.employee_Id && emp.employee_Id.toString().includes(search))
   );
 
+  const toggleModal = () => {
+    setShowForm(!showForm);
+    if (showForm) {
+      setEditingEmployee(null);
+      setNewEmployee({
+        employee_Id: "",
+        fullName: "",
+        jobRole: "",
+        shift: "",
+        assignedMachineID: "",
+        attendanceRecord: "",
+      });
+      setErrors({});
+    }
+  };
+
   return (
-    <div className="employee-container">
-      <div className="employee-header">
-        <h1>Employee Management</h1>
-        <div className="header-buttons">
-          <button
-            className="generate-pdf-btn"
-            onClick={handleGeneratePDF}
-            disabled={employees.length === 0 || isLoading}
-            title={employees.length === 0 ? "No employees to generate PDF" : "Generate PDF report"}
-          >
-            <i className="fas fa-file-pdf"></i> Generate PDF
-          </button>
-          <button
-            className="machine-btn"
-            onClick={() => navigate("/machines-details")}
-            title="View machine details"
-          >
-            <i className="fas fa-cogs"></i> Machine Details
-          </button>
-        </div>
-      </div>
-
-      <div className="search-add-container">
-        <div className="search-wrapper">
-          <i className="fas fa-search"></i>
-          <input
-            type="text"
-            placeholder="Search by Employee Name or ID"
-            className="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            disabled={isLoading}
-          />
-        </div>
-        <button
-          className="new-employee-btn"
-          onClick={() => setShowForm(!showForm)}
-          disabled={isLoading}
-        >
-          <i className="fas fa-user-plus"></i> {showForm ? "Cancel" : "New Employee"}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="employee-form-container">
-          <h2>Add New Employee</h2>
-          <form onSubmit={handleAddEmployee}>
-            <div className="form-group">
-              <label htmlFor="employee_Id">Employee ID*</label>
-              <input
-                type="text"
-                id="employee_Id"
-                name="employee_Id"
-                placeholder="Enter employee ID"
-                value={newEmployee.employee_Id}
-                onChange={handleInputChange}
-                className={errors.employee_Id ? "error-input" : ""}
-                disabled={isLoading}
-              />
-              {errors.employee_Id && <span className="error-text">{errors.employee_Id}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="fullName">Full Name*</label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                placeholder="Enter full name"
-                value={newEmployee.fullName}
-                onChange={handleInputChange}
-                className={errors.fullName ? "error-input" : ""}
-                disabled={isLoading}
-              />
-              {errors.fullName && <span className="error-text">{errors.fullName}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="jobRole">Job Role*</label>
-              <input
-                type="text"
-                id="jobRole"
-                name="jobRole"
-                placeholder="Enter job role"
-                value={newEmployee.jobRole}
-                onChange={handleInputChange}
-                className={errors.jobRole ? "error-input" : ""}
-                disabled={isLoading}
-              />
-              {errors.jobRole && <span className="error-text">{errors.jobRole}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="shift">Shift*</label>
-              <select
-                id="shift"
-                name="shift"
-                value={newEmployee.shift}
-                onChange={handleInputChange}
-                className={errors.shift ? "error-input" : ""}
-                disabled={isLoading}
-              >
-                <option value="">Select shift</option>
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Night">Night</option>
-                <option value="Day">Day</option>
-              </select>
-              {errors.shift && <span className="error-text">{errors.shift}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="assignedMachineID">Assigned Machine ID</label>
-              <input
-                type="text"
-                id="assignedMachineID"
-                name="assignedMachineID"
-                placeholder="Enter machine ID"
-                value={newEmployee.assignedMachineID}
-                onChange={handleInputChange}
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="attendanceRecord">Attendance Record</label>
-              <select
-                id="attendanceRecord"
-                name="attendanceRecord"
-                value={newEmployee.attendanceRecord}
-                onChange={handleInputChange}
-                disabled={isLoading}
-              >
-                <option value="">Select attendance</option>
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-              </select>
-            </div>
-
-            <div className="form-actions">
-              <button type="submit" className="add-btn" disabled={isLoading}>
-                <i className="fas fa-save"></i> {isLoading ? "Saving..." : "Save Employee"}
-              </button>
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={() => setShowForm(false)}
-                disabled={isLoading}
-              >
-                <i className="fas fa-times"></i> Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {editingEmployee && (
-        <div className="employee-form-container">
-          <h2>Update Employee</h2>
-          <form onSubmit={handleUpdateSubmit}>
-            <div className="form-group">
-              <label>Employee ID</label>
-              <input type="text" value={editingEmployee.employee_Id} disabled />
-            </div>
-            <div className="form-group">
-              <label>Full Name*</label>
-              <input
-                type="text"
-                value={editingEmployee.fullName}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, fullName: e.target.value })}
-                disabled={isLoading}
-              />
-            </div>
-            <div className="form-group">
-              <label>Job Role*</label>
-              <input
-                type="text"
-                value={editingEmployee.jobRole}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, jobRole: e.target.value })}
-                disabled={isLoading}
-              />
-            </div>
-            <div className="form-group">
-              <label>Shift*</label>
-              <select
-                value={editingEmployee.shift}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, shift: e.target.value })}
-                disabled={isLoading}
-              >
-                <option value="">Select shift</option>
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Night">Night</option>
-                <option value="Day">Day</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Assigned Machine ID</label>
-              <input
-                type="text"
-                value={editingEmployee.assignedMachineID}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, assignedMachineID: e.target.value })}
-                disabled={isLoading}
-              />
-            </div>
-            <div className="form-group">
-              <label>Attendance Record</label>
-              <select
-                value={editingEmployee.attendanceRecord}
-                onChange={(e) => setEditingEmployee({ ...editingEmployee, attendanceRecord: e.target.value })}
-                disabled={isLoading}
-              >
-                <option value="">Select attendance</option>
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-              </select>
-            </div>
-            <div className="form-actions">
-              <button type="submit" className="add-btn" disabled={isLoading}>
-                <i className="fas fa-save"></i> {isLoading ? "Updating..." : "Update Employee"}
-              </button>
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={() => setEditingEmployee(null)}
-                disabled={isLoading}
-              >
-                <i className="fas fa-times"></i> Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="loading">
-          <i className="fas fa-spinner fa-spin"></i> Loading employees...
-        </div>
-      ) : filteredEmployees.length === 0 ? (
-        <div className="no-results">
-          {employees.length === 0
-            ? "No employees found. Add a new employee to get started."
-            : "No matching employees found for your search."}
-        </div>
-      ) : (
-        <div className="table-container">
-          <table className="employee-table">
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Full Name</th>
-                <th>Job Role</th>
-                <th>Shift</th>
-                <th>Assigned Machine</th>
-                <th>Attendance</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEmployees.map((emp) => (
-                <tr key={emp._id}>
-                  <td>{emp.employee_Id || "N/A"}</td>
-                  <td>{emp.fullName || "N/A"}</td>
-                  <td>{emp.jobRole || "N/A"}</td>
-                  <td>{emp.shift || "N/A"}</td>
-                  <td>{emp.assignedMachineID || "N/A"}</td>
-                  <td>{emp.attendanceRecord || "N/A"}</td>
-                  <td className="actions">
-                    <button
-                      className="update-btn"
-                      onClick={() => handleUpdateEmployee(emp)}
+    <Container fluid className="py-4">
+      <Row>
+        <Col xs="12">
+          <Card className="shadow-sm rounded">
+            <CardHeader className="bg-primary text-white d-flex justify-content-between align-items-center">
+              <h2 className="mb-0">Employee Management</h2>
+              <div className="d-flex gap-2">
+                <PDFGenerator employees={employees} />
+                <Button
+                  color="info"
+                  size="sm"
+                  onClick={() => navigate("/machines-details")}
+                  title="View machine details"
+                >
+                  <FaCogs className="me-1" /> Machine Details
+                </Button>
+              </div>
+            </CardHeader>
+            <CardBody>
+              <Row className="mb-4 align-items-center">
+                <Col xs="12" md="6" className="mb-2 mb-md-0">
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <FaSearch />
+                    </span>
+                    <Input
+                      type="text"
+                      placeholder="Search by Employee Name or ID"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
                       disabled={isLoading}
-                      title="Update employee"
-                    >
-                      <i className="fas fa-edit"></i> Update
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDeleteEmployee(emp._id)}
-                      disabled={isLoading}
-                      title="Delete employee"
-                    >
-                      <i className="fas fa-trash-alt"></i> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                    />
+                  </div>
+                </Col>
+                <Col xs="12" md="6" className="text-md-end">
+                  <Button
+                    color="primary"
+                    onClick={toggleModal}
+                    disabled={isLoading}
+                  >
+                    <FaPlus className="me-1" /> New Employee
+                  </Button>
+                </Col>
+              </Row>
+
+              <Modal isOpen={showForm} toggle={toggleModal} size="lg">
+                <ModalHeader toggle={toggleModal} className="bg-light">
+                  {editingEmployee ? "Update Employee" : "Add New Employee"}
+                </ModalHeader>
+                <ModalBody>
+                  <Form onSubmit={editingEmployee ? handleUpdateSubmit : handleAddEmployee}>
+                    <Row>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="employee_Id">Employee ID*</Label>
+                          <Input
+                            type="text"
+                            id="employee_Id"
+                            name="employee_Id"
+                            placeholder="Enter employee ID"
+                            value={editingEmployee ? editingEmployee.employee_Id : newEmployee.employee_Id}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, employee_Id: e.target.value }) : handleInputChange}
+                            invalid={!!errors.employee_Id}
+                            disabled={isLoading || editingEmployee}
+                          />
+                          {errors.employee_Id && <div className="text-danger">{errors.employee_Id}</div>}
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="fullName">Full Name*</Label>
+                          <Input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            placeholder="Enter full name"
+                            value={editingEmployee ? editingEmployee.fullName : newEmployee.fullName}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, fullName: e.target.value }) : handleInputChange}
+                            invalid={!!errors.fullName}
+                            disabled={isLoading}
+                          />
+                          {errors.fullName && <div className="text-danger">{errors.fullName}</div>}
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="jobRole">Job Role*</Label>
+                          <Input
+                            type="text"
+                            id="jobRole"
+                            name="jobRole"
+                            placeholder="Enter job role"
+                            value={editingEmployee ? editingEmployee.jobRole : newEmployee.jobRole}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, jobRole: e.target.value }) : handleInputChange}
+                            invalid={!!errors.jobRole}
+                            disabled={isLoading}
+                          />
+                          {errors.jobRole && <div className="text-danger">{errors.jobRole}</div>}
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="shift">Shift*</Label>
+                          <Input
+                            type="select"
+                            id="shift"
+                            name="shift"
+                            value={editingEmployee ? editingEmployee.shift : newEmployee.shift}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, shift: e.target.value }) : handleInputChange}
+                            invalid={!!errors.shift}
+                            disabled={isLoading}
+                          >
+                            <option value="">Select shift</option>
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Night">Night</option>
+                            <option value="Day">Day</option>
+                          </Input>
+                          {errors.shift && <div className="text-danger">{errors.shift}</div>}
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="assignedMachineID">Assigned Machine ID</Label>
+                          <Input
+                            type="text"
+                            id="assignedMachineID"
+                            name="assignedMachineID"
+                            placeholder="Enter machine ID"
+                            value={editingEmployee ? editingEmployee.assignedMachineID : newEmployee.assignedMachineID}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, assignedMachineID: e.target.value }) : handleInputChange}
+                            disabled={isLoading}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col xs="12" md="6">
+                        <FormGroup>
+                          <Label for="attendanceRecord">Attendance Record</Label>
+                          <Input
+                            type="select"
+                            id="attendanceRecord"
+                            name="attendanceRecord"
+                            value={editingEmployee ? editingEmployee.attendanceRecord : newEmployee.attendanceRecord}
+                            onChange={editingEmployee ? (e) => setEditingEmployee({ ...editingEmployee, attendanceRecord: e.target.value }) : handleInputChange}
+                            disabled={isLoading}
+                          >
+                            <option value="">Select attendance</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                          </Input>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <ModalFooter className="bg-light">
+                      <Button
+                        color="primary"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        <FaSave className="me-1" /> {isLoading ? "Saving..." : editingEmployee ? "Update Employee" : "Save Employee"}
+                      </Button>
+                      <Button
+                        color="secondary"
+                        onClick={toggleModal}
+                        disabled={isLoading}
+                      >
+                        <FaTimes className="me-1" /> Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Form>
+                </ModalBody>
+              </Modal>
+
+              {isLoading ? (
+                <div className="text-center py-5">
+                  <Spinner color="primary" />
+                  <p className="mt-2">Loading employees...</p>
+                </div>
+              ) : filteredEmployees.length === 0 ? (
+                <Alert color="info" className="text-center">
+                  {employees.length === 0
+                    ? "No employees found. Add a new employee to get started."
+                    : "No matching employees found for your search."}
+                </Alert>
+              ) : (
+                <Table striped bordered hover responsive>
+                  <thead className="bg-primary text-white">
+                    <tr>
+                      <th>Employee ID</th>
+                      <th>Full Name</th>
+                      <th>Job Role</th>
+                      <th>Shift</th>
+                      <th>Assigned Machine</th>
+                      <th>Attendance</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEmployees.map((emp) => (
+                      <tr key={emp._id}>
+                        <td>{emp.employee_Id || "N/A"}</td>
+                        <td>{emp.fullName || "N/A"}</td>
+                        <td>{emp.jobRole || "N/A"}</td>
+                        <td>{emp.shift || "N/A"}</td>
+                        <td>{emp.assignedMachineID || "N/A"}</td>
+                        <td>{emp.attendanceRecord || "N/A"}</td>
+                        <td>
+                          <Button
+                            color="warning"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => handleUpdateEmployee(emp)}
+                            disabled={isLoading}
+                            title="Update employee"
+                          >
+                            <FaEdit />
+                          </Button>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleDeleteEmployee(emp._id)}
+                            disabled={isLoading}
+                            title="Delete employee"
+                          >
+                            <FaTrash />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </Container>
   );
 };
 
