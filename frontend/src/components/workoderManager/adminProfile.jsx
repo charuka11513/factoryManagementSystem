@@ -4,21 +4,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { AuthContext } from '../TEST/context/AuthContext';
 import { useNavigate } from 'react-router-dom'; 
-//import '../workoderManager/';
-// import FactoryLogo from './asset
 
 import Workoder from './workOders';
 import Dashboard from './dashboard';
-
+import MaterialPrediction from './MaterialPrediction';
+import RecipeManagement from './RecipeManagement';
 
 const AdminProfile = () => {
   const { user } = useContext(AuthContext);
- const [activeTab, setActiveTab] = useState('dashboard');
- const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const navigate = useNavigate();
 
- const handleLogout = () => {  navigate('/AdminLoging');};
-
-
+  const handleLogout = () => { navigate('/AdminLoging'); };
 
   return (
  <Container fluid className="mt-6" class="m-0" >  
@@ -67,6 +64,28 @@ const AdminProfile = () => {
               work Orders
             </Nav.Link>
           </Nav.Item>
+          
+          <Nav.Item>
+            <Nav.Link
+              eventKey="recipeManagement"
+              active={activeTab === 'recipeManagement'}
+              onClick={() => setActiveTab('recipeManagement')}
+              className="d-flex align-items-center py-3 px-3 text-black">
+              <i className="fas fa-book-open me-2"></i>
+              Production Recipes
+            </Nav.Link>
+          </Nav.Item>
+          
+          <Nav.Item>
+            <Nav.Link
+              eventKey="materialPrediction"
+              active={activeTab === 'materialPrediction'}
+              onClick={() => setActiveTab('materialPrediction')}
+              className="d-flex align-items-center py-3 px-3 text-black">
+              <i className="fas fa-calculator me-2"></i>
+              Material Prediction
+            </Nav.Link>
+          </Nav.Item>
 
           <Nav.Item>
             <Nav.Link
@@ -88,36 +107,42 @@ const AdminProfile = () => {
           </div>
         </Nav>
         <Nav.Item>
-                <Nav.Link
-                  eventKey=" customerMessage"
-                  active={activeTab === 'customerMessage'}
-                  onClick={() => setActiveTab('customerMessage')}
-                  className="d-flex align-items-center py-3 px-3 text-black hover-bg-primary" >
-                  <i className="fas fa-calendar-alt me-2"></i>
-                  customer Message
-                </Nav.Link>
-              </Nav.Item>
-            
-        </Col>
+          <Nav.Link
+            eventKey="customerMessage"
+            active={activeTab === 'customerMessage'}
+            onClick={() => setActiveTab('customerMessage')}
+            className="d-flex align-items-center py-3 px-3 text-black hover-bg-primary" >
+            <i className="fas fa-calendar-alt me-2"></i>
+            customer Message
+          </Nav.Link>
+        </Nav.Item>
+      </Col>
               
-        <Col md={1} lg={10} className="bg-light ">
-            <Tab.Content className="p-4">
+      <Col md={1} lg={10} className="bg-light ">
+        <Tab.Content className="p-4">
+          <Tab.Pane active={activeTab === 'customerMessage'}>
+            <Workoder />
+          </Tab.Pane>
 
-              <Tab.Pane active={activeTab === 'customerMessage'} >
-              <Workoder /></Tab.Pane>
+          <Tab.Pane active={activeTab === 'dashboard'}>
+            <Dashboard />
+          </Tab.Pane>
 
-              <Tab.Pane active={activeTab === 'dashboard'} >
-              <Dashboard /></Tab.Pane>
-
-              <Tab.Pane active={activeTab === 'workOrders'} >
-              <Workoder /></Tab.Pane>
-
-
-
-            </Tab.Content>
-          </Col>  
-      </Row>
-    </Container>
+          <Tab.Pane active={activeTab === 'workOrders'}>
+            <Workoder />
+          </Tab.Pane>
+          
+          <Tab.Pane active={activeTab === 'recipeManagement'}>
+            <RecipeManagement />
+          </Tab.Pane>
+          
+          <Tab.Pane active={activeTab === 'materialPrediction'}>
+            <MaterialPrediction />
+          </Tab.Pane>
+        </Tab.Content>
+      </Col>  
+    </Row>
+  </Container>
   );
 };
 
