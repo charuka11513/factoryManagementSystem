@@ -251,7 +251,7 @@ const fetchMachineNames = async () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 ">
       <h2 className="mb-4">Work Order Details</h2>
       <div className="d-flex justify-content-between mb-3">
         <Button
