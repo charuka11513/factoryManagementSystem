@@ -5,32 +5,37 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { AuthContext } from '../TEST/context/AuthContext';
 import { useNavigate } from 'react-router-dom'; 
 
+//import '../workoderManager/';
+// import FactoryLogo from './asset
+
 import Workoder from './workOders';
 import Dashboard from './dashboard';
+import RecentOder from './oder_Viewer';
 import MaterialPrediction from './MaterialPrediction';
 import RecipeManagement from './RecipeManagement';
 
+
 const AdminProfile = () => {
   const { user } = useContext(AuthContext);
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const navigate = useNavigate();
+ const [activeTab, setActiveTab] = useState('dashboard');
+ const navigate = useNavigate();
 
-  const handleLogout = () => { navigate('/AdminLoging'); };
+ const handleLogout = () => {  navigate('/');};
+
+
+  // const handleLogout = () => { navigate('/AdminLoging'); };
 
   return (
- <Container fluid className="mt-6" class="m-0" >  
+ <Container fluid className="mt-6 m-0 vh-100 vw-95"  >  
    <Row className="min-vh-100 ">
       <Col md={2} lg={2} className="bg-light text-black p-0 m-0 ">
 
         <Nav variant="pills" className="flex-column">
-          <h4 className='d-flex align-items-center py-3 px-'>FACTORY MANAGEMENT</h4>
-          
-          {/* Logo placeholder - replace with your actual logo */}
+          <h4 className='d-flex align-items-center py-3 px-'>FACTORY PRO</h4>
           <div className="p-3">
-            <div className="bg-secondary" style={{ height: "160px", width: "100%" }}></div>
-            {/* Uncomment when you have a logo */}
-            {/* <img src={FactoryLogo} className="img-thumbnail" alt="Factory Logo"/> */}
-          </div>
+            {/*<div className="bg-secondary" style={{ height: "160px", width: "100%" }}></div>*/}
+            <img src='../../../src/assets/FactoryLogo.png'className="img-thumbnail" alt="Factory Logo"style={{ height: "160px", width: "100%" }}/> 
+          </div> 
           
           <Nav.Item>
             <Nav.Link
@@ -94,7 +99,7 @@ const AdminProfile = () => {
               onClick={() => setActiveTab('button')}
               className="d-flex align-items-center py-3 px-3 text-black">
               <i className="fas fa-cog me-2"></i>
-              Button
+              message
             </Nav.Link>
           </Nav.Item>
           
@@ -140,9 +145,12 @@ const AdminProfile = () => {
             <MaterialPrediction />
           </Tab.Pane>
         </Tab.Content>
+        <Tab.Pane active={activeTab === 'orders'} >
+              <RecentOder /></Tab.Pane>
       </Col>  
     </Row>
   </Container>
+              
   );
 };
 

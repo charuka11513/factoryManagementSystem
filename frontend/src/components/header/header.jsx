@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
+import '../header/header.css';
 const Header = () => {
   return (
     <nav className="nav nav-pills flex-column flex-sm-row">

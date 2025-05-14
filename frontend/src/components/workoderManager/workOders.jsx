@@ -9,7 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import {message} from 'antd'
 import PdfGenerator from '../TEST/Utils/Pdfs/SupplierPDF';
 import { AuthContext } from '../TEST/context/AuthContext.jsx'; 
-
+import WorkOrderPDFHandler from '../TEST/Utils/Pdfs/WorkOrderPDFHandler.jsx';
 
 const WorkOrders = () => {
 
@@ -28,7 +28,7 @@ const WorkOrders = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
-
+  const pdfHandler = WorkOrderPDFHandler({ workOrders: filtereDatails });
   useEffect(() => {
     fetchInventory();
   }, []);
@@ -123,50 +123,45 @@ const WorkOrders = () => {
         toast.error('Failed to delete ');
       }
     });
-  };
+   };
 
-  const validate = () => {
-    const newErrors = {};
-  
+   const validate = () => {
+      const newErrors = {};
     
-    // Validate work order ID
-      if (!currentWorkOrder.work_order_Id) {
-        newErrors.work_order_Id = "Work order ID is required.";
-      }
+      
+      // Validate work order ID
+        if (!currentWorkOrder.work_order_Id) {
+          newErrors.work_order_Id = "Work order ID is required."; }
+       
 
-  
-    // Validate product
-    if (!currentWorkOrder.product) {
-      newErrors.product = "Product is required.";
-    } else if (!/^[a-zA-Z\s]+$/.test(currentWorkOrder.product)) {
-      newErrors.product = "Product must be a string and can't contain numbers or special characters.";
-    }
+    
+      // Validate product
+      if (!currentWorkOrder.product) {
+        newErrors.product = "Product is required.";
+      } else if (!/^[a-zA-Z\s]+$/.test(currentWorkOrder.product)) {
+        newErrors.product = "Product must be a string and can't contain numbers or special characters.";}
 
-  
-    // Validate quantity
-    if (!currentWorkOrder.quentity || currentWorkOrder.quentity <= 50) {
-      newErrors.quentity = "Quantity must be greater than 50.";
-    }
-  
-    // Validate deadline date
-    if (!currentWorkOrder.deadline_date) {
-      newErrors.deadline_date = "Deadline date is required.";
-    } else if (new Date(currentWorkOrder.deadline_date) < new Date()) {
-      newErrors.deadline_date = "Deadline date cannot be in the past.";
-    }
-    // Validate order_status
-    if (!currentWorkOrder.order_status || !currentWorkOrder.order_status.trim()) {
-      newErrors.order_status = "order_status is required.";
-    }
-    // Validate machine
-    if (!currentWorkOrder.machine || !currentWorkOrder.machine.trim()) {
-      newErrors.machine = "machine is required.";
-    }
+      // Validate quantity
+      if (!currentWorkOrder.quentity || currentWorkOrder.quentity <= 50) {
+        newErrors.quentity = "Quantity must be greater than 50.";}
 
-  
-    setValidationErrors(newErrors);
-    return newErrors;
-  };
+      // Validate deadline date
+      if (!currentWorkOrder.deadline_date) {
+        newErrors.deadline_date = "Deadline date is required.";
+      } else if (new Date(currentWorkOrder.deadline_date) < new Date()) {
+        newErrors.deadline_date = "Deadline date cannot be in the past."; }
+    
+      // Validate order_status
+      if (!currentWorkOrder.order_status || !currentWorkOrder.order_status.trim()) { 
+        newErrors.order_status = "order_status is required.";}
+    
+      // Validate machine
+      if (!currentWorkOrder.machine || !currentWorkOrder.machine.trim()) {
+        newErrors.machine = "machine is required.";}
+    
+      setValidationErrors(newErrors);
+      return newErrors;
+    };
   
   const openUpdateModal = (item) => {
     setCurrentWorkOrder(item);
@@ -175,24 +170,18 @@ const WorkOrders = () => {
   };
 
   //pdf generate
-  const handleExportPDF = () => {
-    // Define the headers for the PDF
-    const headers = ['Work Order ID', 'Product', 'Quantity', 'Machine', 'Deadline Date', 'Order Status'];
-    
-    // Map the work order details into an array of data
-    const data = filtereDatails.map(workOrderDetails => [
-      workOrderDetails.work_order_Id,
-      workOrderDetails.product,
-      workOrderDetails.quentity,
-      workOrderDetails.machine,
-      workOrderDetails.deadline_date,
-      workOrderDetails.order_status
-    ]);
-    const title = 'Work Order Details';
-    const generatedDate = new Date().toLocaleString();
-    const numberOfItems = filtereDatails.length;
-    PdfGenerator.generatePdf(data, title, headers, numberOfItems, generatedDate);
-  };
+  const handleExportPDF = async () => {
+    try {
+      console.log('Data being sent to PDF:', filtereDatails);
+      console.log('Stats:', pdfHandler.stats);
+      await pdfHandler.generatePDF();
+      toast.success('PDF generated successfully');
+    } catch (error) {
+      toast.error('Failed to generate PDF: ' + error.message);
+      console.error('PDF generation error:', error);
+    }
+  }; 
+  //status changer 
   const handleStatusChange = async (id, newStatus) => {
     try {
       await axios.put(`${BASE_URL2}/WorkOder_update`, { id, order_status: newStatus });
@@ -212,24 +201,7 @@ const WorkOrders = () => {
     }
   };
   ////////////////////////////////////////////////////email//////////////////////////////////////////////
-  const [clickedAcceptButtons, setClickedAcceptButtons] = useState([]);
-  const sendConfirmationEmail = async (email,name, appointmentDetails) => {
-    try {
-      await axios.post(`${BASE_URL1}/send-confirmation-email`, { email,name, appointmentDetails });
-    } catch (error) {
-      console.error('Error sending confirmation email:', error);
-    }
-  };
 
-  const handleEmailSubmit = async (appointmentDetails) => {  
-    try {  
-      await sendConfirmationEmail(appointmentDetails.email_address, appointmentDetails.customer_name,appointmentDetails);
-      toast.success('Booking saved successfully!');
-      setClickedAcceptButtons((prevClicked) => [...prevClicked, appointmentDetails._id]);
-    } catch (error) {
-      console.error('Error while submitting the booking:', error);
-    }
-  };
 
   return (
     <div className="container mt-5">

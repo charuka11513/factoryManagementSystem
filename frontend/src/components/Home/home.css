@@ -1,0 +1,170 @@
+/* FactoryProHomePage.css */
+
+/* General Styles */
+.factory-pro-container {
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+  
+  /* Welcome Section */
+  .welcome-section {
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .logo {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .welcome-content {
+    max-width: 800px;
+  }
+  
+  .welcome-content .btn-primary {
+    transition: transform 0.2s, background-color 0.3s;
+  }
+  
+  .welcome-content .btn-primary:hover {
+    transform: scale(1.05);
+    background-color: #0056b3;
+  }
+  
+  /* Management Section */
+  .management-section {
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa; 
+  }
+  
+  /* Glassmorphism Effect for Cards */
+  .management-card {
+    background: rgba(255, 255, 255, 0.1) !important; /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glassmorphism blur effect */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtle border */
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.3s ease;
+    border-radius: 15px !important;
+    opacity: 0; /* Initially hidden until animation triggers */
+  }
+  
+  /* Ensure cards are visible when animation starts */
+  .management-card.animate__animated {
+    opacity: 1;
+  }
+  
+  /* Hover Effect for Cards */
+  .management-card:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+    background: rgba(255, 255, 255, 0.2) !important; /* Slightly more opaque on hover */
+  }
+  
+  /* Icon Styling */
+  .management-section .bi {
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .management-card:hover .bi {
+    color: #00aaff !important; /* Brighter blue on hover */
+    transform: rotate(15deg); /* Subtle rotation for a dynamic effect */
+  }
+  
+  /* Card Text and Button Styling */
+  .management-card .card-title {
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .management-card .card-text {
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+  
+  .management-card .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .management-card .btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+  }
+  
+  /* Section Title */
+  .management-section h2 {
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    opacity: 0; /* Initially hidden until animation triggers */
+  }
+  
+  /* Ensure title is visible when animation starts */
+  .management-section h2.animate__animated {
+    opacity: 1;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #1a1a1a;
+  }
+  
+  .footer p {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .welcome-section h2 {
+      font-size: 2.5rem;
+    }
+  
+    .welcome-section p {
+      font-size: 1rem;
+    }
+  
+    .management-section,
+    .footer {
+      height: auto !important;
+      min-height: 100vh;
+      background-attachment: scroll; /* Disable parallax on mobile */
+    }
+  
+    .management-section h2 {
+      font-size: 2rem;
+    }
+  
+    .management-card .card-title {
+      font-size: 1.3rem;
+    }
+  
+    .management-card .card-text {
+      font-size: 0.85rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .welcome-section h2 {
+      font-size: 2rem;
+    }
+  
+    .welcome-section p {
+      font-size: 0.9rem;
+    }
+  
+    .management-section h2 {
+      font-size: 1.8rem;
+    }
+  
+    .management-card .card-title {
+      font-size: 1.2rem;
+    }
+  
+    .management-card .card-text {
+      font-size: 0.8rem;
+    }
+  }
