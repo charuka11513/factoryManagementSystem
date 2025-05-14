@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+import 'antd/dist/reset.css'; // Make sure Ant Design CSS is imported
 
 
 
