@@ -20,7 +20,9 @@ const AdminProfile = () => {
 
  const handleLogout = () => {  navigate('/');};
 
-
+ const handleMessageClick = () => {
+   navigate('/chatbot');
+ };
 
   return (
  <Container fluid className="mt-6 m-0 vh-100 vw-95"  >  
@@ -69,16 +71,14 @@ const AdminProfile = () => {
 
           <Nav.Item>
             <Nav.Link
-              eventKey="button"
-              active={activeTab === 'button'}
-              onClick={() => setActiveTab('button')}
+              onClick={handleMessageClick}
               className="d-flex align-items-center py-3 px-3 text-black">
-              <i className="fas fa-cog me-2"></i>
+              <i className="fas fa-comments me-2"></i>
               message
             </Nav.Link>
           </Nav.Item>
           
-          {/* Logout button at bottom */}
+          {/* Logout button a*/}
           <div className="mt-auto" style={{ position: 'absolute', bottom: '-150px', left: '150px' }}>
             <Nav.Link onClick={handleLogout} className="d-flex align-items-center py-2 px-3 text-black">
               <span className="me-2">logout</span>
@@ -90,7 +90,7 @@ const AdminProfile = () => {
             
         </Col>
               
-        <Col md={1} lg={10} className="bg-light ">
+        <Col md={2} lg={10} className="bg-light ">
             <Tab.Content className="p-4">
 
               <Tab.Pane active={activeTab === 'customerMessage'} >
